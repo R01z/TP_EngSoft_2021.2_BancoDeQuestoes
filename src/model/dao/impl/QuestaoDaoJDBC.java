@@ -5,30 +5,34 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 
 import db.DB;
 import db.DbException;
-import model.dao.ProfessorDao;
+import model.dao.Questao;
+import model.dao.QuestaoDao;
 
-public class ProfessorDaoJDBC implements ProfessorDao{
-	
+public class QuestaoDaoJDBC implements QuestaoDao{
+
 	private Connection conn;
 	
-	public ProfessorDaoJDBC(Connection conn) {
+	public QuestaoDaoJDBC(Connection conn) {
 		this.conn = conn;
 	}
-	
 	@Override
-	public void insert(Professor obj) {
+	public void insert(Questao obj) {
 		PreparedStatement st = null;
 		try {
 			st = conn.prepareStatement(
-					"INSERT INTO Professor "
-					+ "(Nome) "
+					"INSERT INTO Questao "
+					+ "(enunciado, temas, resposta, publica) "
 					+ "VALUES "
-					+ "(?)",
+					+ "(?, ?, ?, ?)",
 					Statement.RETURN_GENERATED_KEYS);
-			st.setString(1, obj.getnomeUsr());
+			st.setString(1, obj.getEnunciado());
+			st.setString(2, obj.getTemas());
+			st.setString(3, obj.getResposta());
+			st.setBoolean(4, obj.getPublica());
 			
 			int rowsAffected = st.executeUpdate();
 			
@@ -57,7 +61,7 @@ public class ProfessorDaoJDBC implements ProfessorDao{
 	public void deleteById(Integer id) {
 		PreparedStatement st = null;
 		try {
-			st = conn.prepareStatement("DELETE FROM Professor WHERE Id = ?");
+			st = conn.prepareStatement("DELETE FROM Questao WHERE Id = ?");
 			st.setInt(1, id);
 			st.executeUpdate();
 		}
@@ -70,24 +74,36 @@ public class ProfessorDaoJDBC implements ProfessorDao{
 		
 	}
 
+	private Questao instanciaQuestao(ResultSet rs) throws SQLException{
+		Questao obj = new Questao();
+		obj.setIdQuestao(rs.getInt("Id"));
+		obj.setEnunciado(rs.getString("enunciado"));
+		obj.setTemas(rs.getString("temas"));
+		obj.setResposta(rs.getString("Resposta"));
+		obj.setPublica(rs.getBoolean("publica"));
+		return obj;
+	}
+	
 	@Override
-	public Professor findById(Integer id) {
+	public List<Questao> findByTemas(enum temas, bool publica) {
 		PreparedStatement st = null;
 		ResultSet rs = null;
 		try {
 			st = conn.prepareStatement(
-					"SELECT Professor.* "
-					+ "FROM Professor "
-					+ "WHERE Professor.Id = ?");
-			st.setInt(1, id);
+					"SELECT Questao.* "
+					+ "FROM Questao "
+					+ "WHERE Questao.temas = ? AND Questao.publica = ?");
+			st.setString(1, temas);
+			st.setBoolean(2, publica);
 			rs = st.executeQuery();
-			if(rs.next()) {
-				Professor prof = new Professor();
-				prof.setIdUsr(rs.getInt("Id"));
-				prof.setNome(rs.getString("Nome"));
-				return prof;
+			
+			List<Questao> lista = new ArrayList<>();
+			
+			while(rs.next()) {
+				Questao obj = instanciaQuestao(rs);
+				lista.add(obj);
 			}
-			return null;
+			return lista;
 		}
 		catch(SQLException e) {
 			throw new DbException(e.getMessage());

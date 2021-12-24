@@ -8,27 +8,29 @@ import java.sql.Statement;
 
 import db.DB;
 import db.DbException;
-import model.dao.ProfessorDao;
+import model.dao.Aluno;
+import model.dao.AlunoDao;
 
-public class ProfessorDaoJDBC implements ProfessorDao{
+public class AlunoDaoJDBC implements AlunoDao{
 	
 	private Connection conn;
 	
-	public ProfessorDaoJDBC(Connection conn) {
+	public AlunoDaoJDBC(Connection conn) {
 		this.conn = conn;
 	}
 	
 	@Override
-	public void insert(Professor obj) {
+	public void insert(Aluno obj) {
 		PreparedStatement st = null;
 		try {
 			st = conn.prepareStatement(
-					"INSERT INTO Professor "
-					+ "(Nome) "
+					"INSERT INTO Aluno "
+					+ "(Nome, Matricula) "
 					+ "VALUES "
-					+ "(?)",
+					+ "(?, ?)",
 					Statement.RETURN_GENERATED_KEYS);
 			st.setString(1, obj.getnomeUsr());
+			st.setLong(2, obj.getMatricula());
 			
 			int rowsAffected = st.executeUpdate();
 			
@@ -57,7 +59,7 @@ public class ProfessorDaoJDBC implements ProfessorDao{
 	public void deleteById(Integer id) {
 		PreparedStatement st = null;
 		try {
-			st = conn.prepareStatement("DELETE FROM Professor WHERE Id = ?");
+			st = conn.prepareStatement("DELETE FROM Aluno WHERE Id = ?");
 			st.setInt(1, id);
 			st.executeUpdate();
 		}
@@ -71,21 +73,51 @@ public class ProfessorDaoJDBC implements ProfessorDao{
 	}
 
 	@Override
-	public Professor findById(Integer id) {
+	public Aluno findById(Integer id) {
 		PreparedStatement st = null;
 		ResultSet rs = null;
 		try {
 			st = conn.prepareStatement(
-					"SELECT Professor.* "
-					+ "FROM Professor "
-					+ "WHERE Professor.Id = ?");
+					"SELECT Aluno.* "
+					+ "FROM Aluno "
+					+ "WHERE Aluno.Id = ?");
 			st.setInt(1, id);
 			rs = st.executeQuery();
 			if(rs.next()) {
-				Professor prof = new Professor();
-				prof.setIdUsr(rs.getInt("Id"));
-				prof.setNome(rs.getString("Nome"));
-				return prof;
+				Aluno aluno = new Aluno();
+				aluno.setIdUsr(rs.getInt("Id"));
+				aluno.setNome(rs.getString("Nome"));
+				aluno.setMatricula(rs.getLong("Matricula"));
+				return aluno;
+			}
+			return null;
+		}
+		catch(SQLException e) {
+			throw new DbException(e.getMessage());
+		}
+		finally {
+			DB.closeStatement(st);
+			DB.closeResultSet(rs);
+		}
+	}
+
+	@Override
+	public Aluno findByMatricula(Integer matricula) {
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		try {
+			st = conn.prepareStatement(
+					"SELECT Aluno.* "
+					+ "FROM Aluno "
+					+ "WHERE Aluno.Id = ?");
+			st.setInt(1, matricula);
+			rs = st.executeQuery();
+			if(rs.next()) {
+				Aluno aluno = new Aluno();
+				aluno.setIdUsr(rs.getInt("Id"));
+				aluno.setNome(rs.getString("Nome"));
+				aluno.setMatricula(rs.getLong("Matricula"));
+				return aluno;
 			}
 			return null;
 		}
