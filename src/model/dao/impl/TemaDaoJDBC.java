@@ -5,32 +5,35 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import db.DB;
 import db.DbException;
-import model.entities.Aluno;
-import model.dao.AlunoDao;
+import model.dao.TemaDao;
+import model.entities.Professor;
+import model.entities.Questao;
+import model.entities.Tema;
 
-public class AlunoDaoJDBC implements AlunoDao{
-	
+public class TemaDaoJDBC implements TemaDao{
+
 	private Connection conn;
 	
-	public AlunoDaoJDBC(Connection conn) {
+	public TemaDaoJDBC(Connection conn) {
 		this.conn = conn;
 	}
 	
 	@Override
-	public void insert(Aluno obj) {
+	public void insert(Tema obj) {
 		PreparedStatement st = null;
 		try {
 			st = conn.prepareStatement(
-					"INSERT INTO Aluno "
-					+ "(nomeUsr, matricula) "
+					"INSERT INTO Tema "
+					+ "(nome) "
 					+ "VALUES "
-					+ "(?, ?)",
+					+ "(?)",
 					Statement.RETURN_GENERATED_KEYS);
-			st.setString(1, obj.getNomeUsr());
-			st.setLong(2, obj.getMatricula());
+			st.setString(1, obj.getNome());
 			
 			int rowsAffected = st.executeUpdate();
 			
@@ -38,7 +41,7 @@ public class AlunoDaoJDBC implements AlunoDao{
 				ResultSet rs = st.getGeneratedKeys();
 				if(rs.next()) {
 					int id = rs.getInt(1);
-					obj.setIdUsr(id);
+					obj.setIdTema(id);
 				}
 				DB.closeResultSet(rs);
 			}
@@ -59,7 +62,7 @@ public class AlunoDaoJDBC implements AlunoDao{
 	public void deleteById(Integer id) {
 		PreparedStatement st = null;
 		try {
-			st = conn.prepareStatement("DELETE FROM Aluno WHERE idUsr = ?");
+			st = conn.prepareStatement("DELETE FROM Tema WHERE idTema = ?");
 			st.setInt(1, id);
 			st.executeUpdate();
 		}
@@ -73,22 +76,21 @@ public class AlunoDaoJDBC implements AlunoDao{
 	}
 
 	@Override
-	public Aluno findById(Integer id) {
+	public Tema findById(Integer id) {
 		PreparedStatement st = null;
 		ResultSet rs = null;
 		try {
 			st = conn.prepareStatement(
-					"SELECT Aluno.* "
-					+ "FROM Aluno "
-					+ "WHERE Aluno.idUsr = ?");
+					"SELECT Tema.* "
+					+ "FROM Tema "
+					+ "WHERE Tema.idTema = ?");
 			st.setInt(1, id);
 			rs = st.executeQuery();
 			if(rs.next()) {
-				Aluno aluno = new Aluno();
-				aluno.setIdUsr(rs.getInt("idUsr"));
-				aluno.setNomeUsr(rs.getString("nomeUst"));
-				aluno.setMatricula(rs.getLong("matricula"));
-				return aluno;
+				Tema prof = new Tema();
+				prof.setIdTema(rs.getInt("id"));
+				prof.setNome(rs.getString("nome"));
+				return prof;
 			}
 			return null;
 		}
@@ -102,32 +104,38 @@ public class AlunoDaoJDBC implements AlunoDao{
 	}
 
 	@Override
-	public Aluno findByMatricula(Integer matricula) {
+	public void insertTemaxQuestao(Questao obj) {
 		PreparedStatement st = null;
-		ResultSet rs = null;
 		try {
-			st = conn.prepareStatement(
-					"SELECT Aluno.* "
-					+ "FROM Aluno "
-					+ "WHERE Aluno.matricula = ?");
-			st.setInt(1, matricula);
-			rs = st.executeQuery();
-			if(rs.next()) {
-				Aluno aluno = new Aluno();
-				aluno.setIdUsr(rs.getInt("id"));
-				aluno.setNomeUsr(rs.getString("nomeUsr"));
-				aluno.setMatricula(rs.getLong("matricula"));
-				return aluno;
+			for(int i=0;i<obj.getTemas().size();i++) {
+				st = conn.prepareStatement(
+						"INSERT INTO QuestaoxTema "
+						+ "(idQuestao, idTema) "
+						+ "VALUES "
+						+ "(?, ?)",
+						Statement.RETURN_GENERATED_KEYS);
+				st.setInt(1, obj.getIdQuestao());
+				st.setInt(2, obj.getTemas().get(i).getIdTema());
+				
+				int rowsAffected = st.executeUpdate();
+				
+				if(rowsAffected > 0) {
+					ResultSet rs = st.getGeneratedKeys();
+					DB.closeResultSet(rs);
+				}
+				else {
+					throw new DbException("ERRO! NENHUMA LINHA AFETADA!");
+				}
 			}
-			return null;
+			
 		}
 		catch(SQLException e) {
 			throw new DbException(e.getMessage());
 		}
 		finally {
 			DB.closeStatement(st);
-			DB.closeResultSet(rs);
 		}
+		
 	}
-
+	
 }

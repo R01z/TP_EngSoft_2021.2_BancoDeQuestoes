@@ -9,6 +9,7 @@ import java.sql.Statement;
 import db.DB;
 import db.DbException;
 import model.dao.ProfessorDao;
+import model.entities.Professor;
 
 public class ProfessorDaoJDBC implements ProfessorDao{
 	
@@ -24,11 +25,11 @@ public class ProfessorDaoJDBC implements ProfessorDao{
 		try {
 			st = conn.prepareStatement(
 					"INSERT INTO Professor "
-					+ "(Nome) "
+					+ "(nomeUsr) "
 					+ "VALUES "
 					+ "(?)",
 					Statement.RETURN_GENERATED_KEYS);
-			st.setString(1, obj.getnomeUsr());
+			st.setString(1, obj.getNomeUsr());
 			
 			int rowsAffected = st.executeUpdate();
 			
@@ -36,7 +37,7 @@ public class ProfessorDaoJDBC implements ProfessorDao{
 				ResultSet rs = st.getGeneratedKeys();
 				if(rs.next()) {
 					int id = rs.getInt(1);
-					obj.setId(id);
+					obj.setIdUsr(id);
 				}
 				DB.closeResultSet(rs);
 			}
@@ -57,7 +58,7 @@ public class ProfessorDaoJDBC implements ProfessorDao{
 	public void deleteById(Integer id) {
 		PreparedStatement st = null;
 		try {
-			st = conn.prepareStatement("DELETE FROM Professor WHERE Id = ?");
+			st = conn.prepareStatement("DELETE FROM Professor WHERE idUsr = ?");
 			st.setInt(1, id);
 			st.executeUpdate();
 		}
@@ -78,13 +79,13 @@ public class ProfessorDaoJDBC implements ProfessorDao{
 			st = conn.prepareStatement(
 					"SELECT Professor.* "
 					+ "FROM Professor "
-					+ "WHERE Professor.Id = ?");
+					+ "WHERE Professor.idUsr = ?");
 			st.setInt(1, id);
 			rs = st.executeQuery();
 			if(rs.next()) {
 				Professor prof = new Professor();
-				prof.setIdUsr(rs.getInt("Id"));
-				prof.setNome(rs.getString("Nome"));
+				prof.setIdUsr(rs.getInt("idUsr"));
+				prof.setNomeUsr(rs.getString("nomeUsr"));
 				return prof;
 			}
 			return null;

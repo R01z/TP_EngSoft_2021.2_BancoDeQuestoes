@@ -5,11 +5,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 import db.DB;
 import db.DbException;
-import model.dao.Questao;
+import model.entities.Questao;
+import model.entities.Tema;
 import model.dao.QuestaoDao;
 
 public class QuestaoDaoJDBC implements QuestaoDao{
@@ -25,14 +27,13 @@ public class QuestaoDaoJDBC implements QuestaoDao{
 		try {
 			st = conn.prepareStatement(
 					"INSERT INTO Questao "
-					+ "(enunciado, temas, resposta, publica) "
+					+ "(enunciado, resposta, publica) "
 					+ "VALUES "
-					+ "(?, ?, ?, ?)",
+					+ "(?, ?, ?)",
 					Statement.RETURN_GENERATED_KEYS);
 			st.setString(1, obj.getEnunciado());
-			st.setString(2, obj.getTemas());
-			st.setString(3, obj.getResposta());
-			st.setBoolean(4, obj.getPublica());
+			st.setString(2, obj.getResposta());
+			st.setBoolean(3, obj.getPublica());
 			
 			int rowsAffected = st.executeUpdate();
 			
@@ -40,7 +41,7 @@ public class QuestaoDaoJDBC implements QuestaoDao{
 				ResultSet rs = st.getGeneratedKeys();
 				if(rs.next()) {
 					int id = rs.getInt(1);
-					obj.setId(id);
+					obj.setIdQuestao(id);
 				}
 				DB.closeResultSet(rs);
 			}
@@ -78,24 +79,64 @@ public class QuestaoDaoJDBC implements QuestaoDao{
 		Questao obj = new Questao();
 		obj.setIdQuestao(rs.getInt("Id"));
 		obj.setEnunciado(rs.getString("enunciado"));
-		obj.setTemas(rs.getString("temas"));
 		obj.setResposta(rs.getString("Resposta"));
 		obj.setPublica(rs.getBoolean("publica"));
+		instanciaTemas(obj);
 		return obj;
 	}
 	
-	@Override
-	public List<Questao> findByTemas(enum temas, bool publica) {
+	private void instanciaTemas(Questao obj) {
 		PreparedStatement st = null;
 		ResultSet rs = null;
 		try {
 			st = conn.prepareStatement(
-					"SELECT Questao.* "
-					+ "FROM Questao "
-					+ "WHERE Questao.temas = ? AND Questao.publica = ?");
-			st.setString(1, temas);
-			st.setBoolean(2, publica);
+					"SELECT Tema.*"
+					+ " FROM Tema"
+					+ " JOIN questaoxtema"
+					+ " WHERE questaoxtema.idQuestao = ? AND questaoxtema.idTema = Tema.idTema");
+			st.setInt(1, obj.getIdQuestao());
 			rs = st.executeQuery();
+			
+			while(rs.next()) {
+				Tema tema = new Tema();
+				tema.setIdTema(rs.getInt("idTema"));
+				tema.setNome(rs.getString("nome"));
+				obj.addTema(tema);
+			}
+		}
+		catch(SQLException e) {
+			throw new DbException(e.getMessage());
+		}
+		finally {
+			DB.closeStatement(st);
+			DB.closeResultSet(rs);
+		}
+	}
+	
+	//Função que busca apenas questões públicas no sistema
+	@Override
+	public List<Questao> findByTemas(Tema temas, Boolean publica) {
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		try {
+			if(publica) {
+				st = conn.prepareStatement(
+						"SELECT Questao.*"
+						+ " FROM Questao"
+						+ " JOIN questaoxtema"
+						+ " WHERE Questao.publica = 1 AND questaoxtema.idTema = ? AND questaoxtema.idQuestao = Questao.idQuestao");
+				st.setInt(1, temas.getIdTema());
+				rs = st.executeQuery();
+			}
+			else {
+				st = conn.prepareStatement(
+						"SELECT Questao.*"
+						+ " FROM Questao"
+						+ " JOIN questaoxtema"
+						+ " WHERE questaoxtema.idTema = ? AND questaoxtema.idQuestao = Questao.idQuestao");
+				st.setInt(1, temas.getIdTema());
+				rs = st.executeQuery();
+			}
 			
 			List<Questao> lista = new ArrayList<>();
 			
