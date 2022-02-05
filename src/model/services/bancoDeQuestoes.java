@@ -19,4 +19,12 @@ public class bancoDeQuestoes {
 	public void insereQuestao(Questao questao) {
 		dao.insert(questao);
 	}
+	
+	public void insereRelatorio(Questao questao) {
+		dao.insertRelatorio(questao);
+	}
+	
+	public void updateRelatorio(Questao questao) {
+		dao.updateRelatorio(questao);
+	}
 }

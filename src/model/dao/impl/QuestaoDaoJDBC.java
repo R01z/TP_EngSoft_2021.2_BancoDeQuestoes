@@ -64,6 +64,7 @@ public class QuestaoDaoJDBC implements QuestaoDao{
 	
 	//Recebe uma questão e insere seu relatorio no sistema
 	//Usar apenas se o relatorio não tiver sido criado ainda
+	@Override
 	public void insertRelatorio(Questao obj) {
 		PreparedStatement st = null;
 		try {
@@ -163,7 +164,8 @@ public class QuestaoDaoJDBC implements QuestaoDao{
 	}
 	
 	//Recebe uma Questão, procura os temas dessa questão e instancia a lista de temas da questao
-	private void instanciaTemas(Questao obj) {
+	@Override
+	public void instanciaTemas(Questao obj) {
 		PreparedStatement st = null;
 		ResultSet rs = null;
 		try {
@@ -192,7 +194,8 @@ public class QuestaoDaoJDBC implements QuestaoDao{
 	}
 	
 	//Recebe uma questão, procura o relatorio dessa questão no BD e instancia o relatorio na questao
-	private void instanciaRelatorio(Questao obj) {
+	@Override
+	public void instanciaRelatorio(Questao obj) {
 		PreparedStatement st = null;
 		ResultSet rs = null;
 		try {
@@ -265,6 +268,7 @@ public class QuestaoDaoJDBC implements QuestaoDao{
 	}
 	
 	//Questão que atualiza no BD o relatorio de uma questao
+	@Override
 	public void updateRelatorio(Questao obj) {
 		PreparedStatement st = null;
 		try {
