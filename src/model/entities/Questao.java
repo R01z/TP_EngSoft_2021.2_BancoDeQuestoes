@@ -10,6 +10,7 @@ public class Questao {
 	private String resposta;
 	private Boolean publica;
 	private List<Tema> temas = new ArrayList<>();
+	private Relatorio relatorio;
 	
 	public Questao(Integer idQuestao, String enunciado, String resposta, Boolean publica, List<Tema> temas) {
 		this.idQuestao = idQuestao;
@@ -17,6 +18,7 @@ public class Questao {
 		this.resposta = resposta;
 		this.publica = publica;
 		this.temas = temas;
+		relatorio = null;
 	}
 	
 	public Questao() {}
@@ -59,5 +61,13 @@ public class Questao {
 	
 	public void addTema(Tema tema) {
 		temas.add(tema);
+	}
+	
+	public void setRelatorio(Relatorio relatorio) {
+		this.relatorio = relatorio;
+	}
+
+	public Relatorio getRelatorio() {
+		return relatorio;
 	}
 }

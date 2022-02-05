@@ -10,9 +10,10 @@ import java.util.List;
 
 import db.DB;
 import db.DbException;
-import model.entities.Questao;
-import model.entities.Tema;
 import model.dao.QuestaoDao;
+import model.entities.Questao;
+import model.entities.Relatorio;
+import model.entities.Tema;
 
 public class QuestaoDaoJDBC implements QuestaoDao{
 
@@ -21,19 +22,21 @@ public class QuestaoDaoJDBC implements QuestaoDao{
 	public QuestaoDaoJDBC(Connection conn) {
 		this.conn = conn;
 	}
+	
 	@Override
 	public void insert(Questao obj) {
 		PreparedStatement st = null;
 		try {
 			st = conn.prepareStatement(
 					"INSERT INTO Questao "
-					+ "(enunciado, resposta, publica) "
+					+ "(enunciado, resposta, publica, idRel) "
 					+ "VALUES "
-					+ "(?, ?, ?)",
+					+ "(?, ?, ?, ?)",
 					Statement.RETURN_GENERATED_KEYS);
 			st.setString(1, obj.getEnunciado());
 			st.setString(2, obj.getResposta());
 			st.setBoolean(3, obj.getPublica());
+			st.setInt(4, obj.getRelatorio().getIdRel());
 			
 			int rowsAffected = st.executeUpdate();
 			
@@ -42,6 +45,46 @@ public class QuestaoDaoJDBC implements QuestaoDao{
 				if(rs.next()) {
 					int id = rs.getInt(1);
 					obj.setIdQuestao(id);
+					insertTemaxQuestao(obj);
+				}
+				DB.closeResultSet(rs);
+			}
+			else {
+				throw new DbException("ERRO! NENHUMA LINHA AFETADA!");
+			}
+		}
+		catch(SQLException e) {
+			throw new DbException(e.getMessage());
+		}
+		finally {
+			DB.closeStatement(st);
+		}
+		
+	}
+	
+	//Recebe uma questão e insere seu relatorio no sistema
+	//Usar apenas se o relatorio não tiver sido criado ainda
+	public void insertRelatorio(Questao obj) {
+		PreparedStatement st = null;
+		try {
+			st = conn.prepareStatement(
+					"INSERT INTO Relatorio "
+					+ "(semestre, turma, atividade, notaMedia) "
+					+ "VALUES "
+					+ "(?, ?, ?, ?)",
+					Statement.RETURN_GENERATED_KEYS);
+			st.setString(1, obj.getRelatorio().getSemestre());
+			st.setString(2, obj.getRelatorio().getTurma());
+			st.setString(3, obj.getRelatorio().getAtividade());
+			st.setDouble(4, obj.getRelatorio().getNotaMedia());
+			
+			int rowsAffected = st.executeUpdate();
+			
+			if(rowsAffected > 0) {
+				ResultSet rs = st.getGeneratedKeys();
+				if(rs.next()) {
+					int id = rs.getInt(1);
+					obj.getRelatorio().setIdRel(id);
 				}
 				DB.closeResultSet(rs);
 			}
@@ -58,6 +101,39 @@ public class QuestaoDaoJDBC implements QuestaoDao{
 		
 	}
 
+	public void insertTemaxQuestao(Questao obj) {
+		PreparedStatement st = null;
+		try {
+			for(int i=0;i<obj.getTemas().size();i++) {
+				st = conn.prepareStatement(
+						"INSERT INTO QuestaoxTema "
+						+ "(idQuestao, idTema) "
+						+ "VALUES "
+						+ "(?, ?)",
+						Statement.RETURN_GENERATED_KEYS);
+				st.setInt(1, obj.getIdQuestao());
+				st.setInt(2, obj.getTemas().get(i).getIdTema());
+				
+				int rowsAffected = st.executeUpdate();
+				
+				if(rowsAffected > 0) {
+					ResultSet rs = st.getGeneratedKeys();
+					DB.closeResultSet(rs);
+				}
+				else {
+					throw new DbException("ERRO! NENHUMA LINHA AFETADA!");
+				}
+			}
+			
+		}
+		catch(SQLException e) {
+			throw new DbException(e.getMessage());
+		}
+		finally {
+			DB.closeStatement(st);
+		}
+	}
+		
 	@Override
 	public void deleteById(Integer id) {
 		PreparedStatement st = null;
@@ -82,9 +158,11 @@ public class QuestaoDaoJDBC implements QuestaoDao{
 		obj.setResposta(rs.getString("Resposta"));
 		obj.setPublica(rs.getBoolean("publica"));
 		instanciaTemas(obj);
+		instanciaRelatorio(obj);
 		return obj;
 	}
 	
+	//Recebe uma Questão, procura os temas dessa questão e instancia a lista de temas da questao
 	private void instanciaTemas(Questao obj) {
 		PreparedStatement st = null;
 		ResultSet rs = null;
@@ -113,7 +191,38 @@ public class QuestaoDaoJDBC implements QuestaoDao{
 		}
 	}
 	
-	//Função que busca apenas questões públicas no sistema
+	//Recebe uma questão, procura o relatorio dessa questão no BD e instancia o relatorio na questao
+	private void instanciaRelatorio(Questao obj) {
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		try {
+			st = conn.prepareStatement(
+					"SELECT Relatorio.*"
+					+ " FROM Relatorio"
+					+ " JOIN Questao"
+					+ " WHERE Questao.idRel = Relatorio.idRel");
+			rs = st.executeQuery();
+			
+			while(rs.next()) {
+				Relatorio relatorio = new Relatorio();
+				relatorio.setIdRel(rs.getInt("idRel"));
+				relatorio.setSemestre(rs.getString("semestre"));
+				relatorio.setTurma(rs.getString("turma"));
+				relatorio.setAtividade(rs.getString("atividade"));
+				relatorio.setNotaMedia(rs.getDouble("notaMedia"));
+				obj.setRelatorio(relatorio);
+			}
+		}
+		catch(SQLException e) {
+			throw new DbException(e.getMessage());
+		}
+		finally {
+			DB.closeStatement(st);
+			DB.closeResultSet(rs);
+		}
+	}
+	
+	//Função que busca questões no BD, recebendo um tema e 1 para recuperar apenas questões públicas e 0 para todas
 	@Override
 	public List<Questao> findByTemas(Tema temas, Boolean publica) {
 		PreparedStatement st = null;
@@ -152,6 +261,28 @@ public class QuestaoDaoJDBC implements QuestaoDao{
 		finally {
 			DB.closeStatement(st);
 			DB.closeResultSet(rs);
+		}
+	}
+	
+	//Questão que atualiza no BD o relatorio de uma questao
+	public void updateRelatorio(Questao obj) {
+		PreparedStatement st = null;
+		try {
+			st = conn.prepareStatement(
+					"UPDATE Relatorio "
+					+ "SET semestre = ?, turma= ?, atividade = ?, notaMedia = ? "
+					+ "WHERE Relatorio.idRel = ?");
+			st.setString(1, obj.getRelatorio().getSemestre());
+			st.setString(2, obj.getRelatorio().getTurma());
+			st.setString(3, obj.getRelatorio().getAtividade());
+			st.setDouble(4, obj.getRelatorio().getNotaMedia());
+			st.setInt(5, obj.getRelatorio().getIdRel());
+			
+			st.executeUpdate();
+		}
+		catch(SQLException e) {throw new DbException(e.getMessage());}
+		finally {
+			DB.closeStatement(st);
 		}
 	}
 

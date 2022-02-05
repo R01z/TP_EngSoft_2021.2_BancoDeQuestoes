@@ -102,40 +102,5 @@ public class TemaDaoJDBC implements TemaDao{
 			DB.closeResultSet(rs);
 		}
 	}
-
-	@Override
-	public void insertTemaxQuestao(Questao obj) {
-		PreparedStatement st = null;
-		try {
-			for(int i=0;i<obj.getTemas().size();i++) {
-				st = conn.prepareStatement(
-						"INSERT INTO QuestaoxTema "
-						+ "(idQuestao, idTema) "
-						+ "VALUES "
-						+ "(?, ?)",
-						Statement.RETURN_GENERATED_KEYS);
-				st.setInt(1, obj.getIdQuestao());
-				st.setInt(2, obj.getTemas().get(i).getIdTema());
-				
-				int rowsAffected = st.executeUpdate();
-				
-				if(rowsAffected > 0) {
-					ResultSet rs = st.getGeneratedKeys();
-					DB.closeResultSet(rs);
-				}
-				else {
-					throw new DbException("ERRO! NENHUMA LINHA AFETADA!");
-				}
-			}
-			
-		}
-		catch(SQLException e) {
-			throw new DbException(e.getMessage());
-		}
-		finally {
-			DB.closeStatement(st);
-		}
-		
-	}
 	
 }

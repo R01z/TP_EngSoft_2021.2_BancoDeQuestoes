@@ -17,31 +17,31 @@ CREATE TABLE Tema(
     PRIMARY KEY (idTema)
 );
 
+CREATE TABLE Relatorio(
+    idRel int(11) NOT NULL AUTO_INCREMENT,
+    semestre varchar(20) DEFAULT NULL,
+    turma varchar(20) DEFAULT NULL,
+    atividade varchar(50) DEFAULT NULL,
+    notaMedia double DEFAULT NULL,
+    PRIMARY KEY (idRel)
+);
+
 CREATE TABLE Questao(
     idQuestao int(11) NOT NULL AUTO_INCREMENT,
     enunciado varchar(500) DEFAULT NULL,
     publica BIT NOT NULL,
     resposta varchar(300) DEFAULT NULL,
+    idRel int(11) DEFAULT NULL,
+    FOREIGN KEY (idRel) REFERENCES Relatorio (idRel),
     PRIMARY KEY (idQuestao)
 );
 
 CREATE TABLE QuestaoXTema(
-    idQuestao int NOT NULL,
-    idTema int NOT NULL,
+    idQuestao int(11) NOT NULL,
+    idTema int(11) NOT NULL,
     CONSTRAINT PK_QuestaoxTema PRIMARY KEY (idQuestao, idTema),
     CONSTRAINT FK_QuestaoxTema2 FOREIGN KEY (idQuestao) REFERENCES Questao (idQuestao),
     CONSTRAINT FK_QuestaoxTema3 FOREIGN KEY (idTema) REFERENCES Tema (idTema)
-);
-
-CREATE TABLE Relatorio(
-    idRel int(11) NOT NULL AUTO_INCREMENT,
-    idQuestao int(11) NOT NULL,
-    semestre varchar(20) DEFAULT NULL,
-    turma varchar(20) DEFAULT NULL,
-    atividade varchar(50) DEFAULT NULL,
-    notaMedia double DEFAULT NULL,
-    PRIMARY KEY (idRel),
-    FOREIGN KEY (idQuestao) REFERENCES Questao (idQuestao)
 );
 
 INSERT INTO Professor (nomeUsr) VALUES
@@ -61,10 +61,15 @@ INSERT INTO Tema (nome) VALUES
     ('Diagrama de Classes'),
     ('Métodos Ageis');
 
-INSERT INTO Questao (enunciado, publica, resposta) VALUES
-    ('O que e um diagrama de classes?',1,'Um diagrama que mostra as classes'),
-    ('O que e um Teste?',0,'Uma coisa que testa'),
-    ('O que e um metodo agil?',0,'Um metodo rapido');
+INSERT INTO Relatorio (semestre,turma,atividade,notaMedia) VALUES
+    ('2021/1','DCC633','Prova1',8.5),
+    ('2021/1','DCC633','Prova1',10),
+    ('2021/2','DCC60','Prova3',5.2);
+    
+INSERT INTO Questao (enunciado, publica, resposta, idRel) VALUES
+    ('O que e um diagrama de classes?',1,'Um diagrama que mostra as classes',1),
+    ('O que e um Teste?',0,'Uma coisa que testa',2),
+    ('O que e um metodo agil?',0,'Um metodo rapido',3);
 
 INSERT INTO QuestaoXTema (idQuestao,idTema) VALUES
     (1,3),
@@ -72,8 +77,3 @@ INSERT INTO QuestaoXTema (idQuestao,idTema) VALUES
     (2,2),
     (3,4),
     (3,2);
-
-INSERT INTO Relatorio (idQuestao,semestre,turma,atividade,notaMedia) VALUES
-    (1,'2021/1','DCC633','Prova1',8.5),
-    (2,'2021/1','DCC633','Prova1',10),
-    (3,'2021/2','DCC60','Prova3',5.2);
