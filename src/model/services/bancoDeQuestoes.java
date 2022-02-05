@@ -20,11 +20,9 @@ public class bancoDeQuestoes {
 		dao.insert(questao);
 	}
 	
-	public void insereRelatorio(Questao questao) {
-		dao.insertRelatorio(questao);
-	}
-	
-	public void updateRelatorio(Questao questao) {
-		dao.updateRelatorio(questao);
+	public void insereOuAtualizaRelatorio(Questao questao) {
+		if(questao.getRelatorio().getIdRel() == null)
+			dao.insertRelatorio(questao);
+		else dao.updateRelatorio(questao);
 	}
 }

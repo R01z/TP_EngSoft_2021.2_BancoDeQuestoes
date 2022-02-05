@@ -102,7 +102,7 @@ public class AlunoDaoJDBC implements AlunoDao{
 	}
 
 	@Override
-	public Aluno findByMatricula(Integer matricula) {
+	public Aluno findByMatricula(long matricula) {
 		PreparedStatement st = null;
 		ResultSet rs = null;
 		try {
@@ -110,7 +110,7 @@ public class AlunoDaoJDBC implements AlunoDao{
 					"SELECT Aluno.* "
 					+ "FROM Aluno "
 					+ "WHERE Aluno.matricula = ?");
-			st.setInt(1, matricula);
+			st.setLong(1, matricula);
 			rs = st.executeQuery();
 			if(rs.next()) {
 				Aluno aluno = new Aluno();
