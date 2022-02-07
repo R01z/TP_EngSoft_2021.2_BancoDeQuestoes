@@ -32,4 +32,8 @@ public class Usuario {
 	public Boolean getUsrAluno() {
 		return usrAluno;
 	}
+	
+	public void setUsrAluno(Boolean usuario) {
+		this.usrAluno = usuario;
+	}
 }

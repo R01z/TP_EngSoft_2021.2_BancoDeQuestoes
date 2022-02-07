@@ -10,6 +10,7 @@ public class Aluno extends Usuario{
 	}
 
 	public Aluno(){
+		setUsrAluno(Boolean.TRUE);
 	}
 
 	public long getMatricula() {

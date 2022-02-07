@@ -6,5 +6,7 @@ public class Professor extends Usuario{
 		super(nomeUsr, idUsr, Boolean.FALSE);
 	}
 	
-	public Professor() {}
+	public Professor() {
+		setUsrAluno(Boolean.FALSE);
+	}
 }
