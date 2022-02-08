@@ -6,4 +6,5 @@ public interface ProfessorDao {
 	void insert(Professor obj);
 	void deleteById(Integer id);
 	Professor findById(Integer id);
+	Professor findByUsr(String usr);
 }

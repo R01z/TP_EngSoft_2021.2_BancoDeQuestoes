@@ -9,6 +9,7 @@ import java.sql.Statement;
 import db.DB;
 import db.DbException;
 import model.entities.Aluno;
+import model.entities.Aluno;
 import model.dao.AlunoDao;
 
 public class AlunoDaoJDBC implements AlunoDao{
@@ -25,12 +26,13 @@ public class AlunoDaoJDBC implements AlunoDao{
 		try {
 			st = conn.prepareStatement(
 					"INSERT INTO Aluno "
-					+ "(nomeUsr, matricula) "
+					+ "(nomeUsr, matricula, nome) "
 					+ "VALUES "
-					+ "(?, ?)",
+					+ "(?, ?, ?)",
 					Statement.RETURN_GENERATED_KEYS);
 			st.setString(1, obj.getNomeUsr());
 			st.setLong(2, obj.getMatricula());
+			st.setString(3, obj.getNome());
 			
 			int rowsAffected = st.executeUpdate();
 			
@@ -88,6 +90,7 @@ public class AlunoDaoJDBC implements AlunoDao{
 				aluno.setIdUsr(rs.getInt("idUsr"));
 				aluno.setNomeUsr(rs.getString("nomeUst"));
 				aluno.setMatricula(rs.getLong("matricula"));
+				aluno.setNome(rs.getString("nome"));
 				return aluno;
 			}
 			return null;
@@ -117,6 +120,36 @@ public class AlunoDaoJDBC implements AlunoDao{
 				aluno.setIdUsr(rs.getInt("id"));
 				aluno.setNomeUsr(rs.getString("nomeUsr"));
 				aluno.setMatricula(rs.getLong("matricula"));
+				aluno.setNome(rs.getString("nome"));
+				return aluno;
+			}
+			return null;
+		}
+		catch(SQLException e) {
+			throw new DbException(e.getMessage());
+		}
+		finally {
+			DB.closeStatement(st);
+			DB.closeResultSet(rs);
+		}
+	}
+	
+	@Override
+	public Aluno findByUsr(String usr) {
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		try {
+			st = conn.prepareStatement(
+					"SELECT Aluno.* "
+					+ "FROM Aluno "
+					+ "WHERE Aluno.nomeUsr = ?");
+			st.setString(1, usr);
+			rs = st.executeQuery();
+			if(rs.next()) {
+				Aluno aluno = new Aluno();
+				aluno.setIdUsr(rs.getInt("idUsr"));
+				aluno.setNomeUsr(rs.getString("nomeUsr"));
+				aluno.setNome(rs.getString("nome"));
 				return aluno;
 			}
 			return null;

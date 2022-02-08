@@ -2,13 +2,15 @@ package model.entities;
 
 public class Usuario {
 	private String nomeUsr;
+	private String nome;
 	private Integer idUsr;
 	private Boolean usrAluno;
 	
-	public Usuario(String nomeUsr, Integer idUsr, Boolean usrAluno ) {
+	public Usuario(String nomeUsr,String nome, Integer idUsr, Boolean usrAluno ) {
 		this.nomeUsr = nomeUsr;
 		this.idUsr = idUsr;
 		this.usrAluno = usrAluno;
+		this.nome = nome;
 	}
 	
 	public Usuario() {}
@@ -19,6 +21,14 @@ public class Usuario {
 
 	public void setNomeUsr(String nomeUsr) {
 		this.nomeUsr = nomeUsr;
+	}
+
+	public String getNome() {
+		return nome;
+	}
+
+	public void setNome(String nome) {
+		this.nome = nome;
 	}
 
 	public int getIdUsr() {

@@ -7,4 +7,5 @@ public interface AlunoDao {
 	void deleteById(Integer id);
 	Aluno findById(Integer id);
 	Aluno findByMatricula(long matricula);
+	Aluno findByUsr(String usr);
 }

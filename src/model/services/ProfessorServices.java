@@ -18,4 +18,8 @@ public class ProfessorServices {
 	public void deletaPorId(Professor obj) {
 		dao.deleteById(obj.getIdUsr());
 	}
+	
+	public Professor pesquisaAlunoUsr(Professor obj) {
+		return dao.findByUsr(obj.getNomeUsr());
+	}
 }

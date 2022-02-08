@@ -1,6 +1,7 @@
 CREATE TABLE Professor(
     idUsr int(11) NOT NULL AUTO_INCREMENT,
     nomeUsr varchar(60) DEFAULT NULL,
+    nome varchar(60) DEFAULT NULL,
     PRIMARY KEY (idUsr)
 );
 
@@ -8,6 +9,7 @@ CREATE TABLE Aluno(
     idUsr int(11) NOT NULL AUTO_INCREMENT,
     matricula int(11) DEFAULT NULL,
     nomeUsr varchar(60) DEFAULT NULL,
+    nome varchar(60) DEFAULT NULL,
     PRIMARY KEY (idUsr)
 );
 

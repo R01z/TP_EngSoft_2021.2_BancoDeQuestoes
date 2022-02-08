@@ -25,11 +25,12 @@ public class ProfessorDaoJDBC implements ProfessorDao{
 		try {
 			st = conn.prepareStatement(
 					"INSERT INTO Professor "
-					+ "(nomeUsr) "
+					+ "(nomeUsr, nome) "
 					+ "VALUES "
-					+ "(?)",
+					+ "(?, ?)",
 					Statement.RETURN_GENERATED_KEYS);
 			st.setString(1, obj.getNomeUsr());
+			st.setString(2, obj.getNome());
 			
 			int rowsAffected = st.executeUpdate();
 			
@@ -86,6 +87,36 @@ public class ProfessorDaoJDBC implements ProfessorDao{
 				Professor prof = new Professor();
 				prof.setIdUsr(rs.getInt("idUsr"));
 				prof.setNomeUsr(rs.getString("nomeUsr"));
+				prof.setNome(rs.getString("nome"));
+				return prof;
+			}
+			return null;
+		}
+		catch(SQLException e) {
+			throw new DbException(e.getMessage());
+		}
+		finally {
+			DB.closeStatement(st);
+			DB.closeResultSet(rs);
+		}
+	}
+	
+	@Override
+	public Professor findByUsr(String usr) {
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		try {
+			st = conn.prepareStatement(
+					"SELECT Professor.* "
+					+ "FROM Professor "
+					+ "WHERE Professor.nomeUsr = ?");
+			st.setString(1, usr);
+			rs = st.executeQuery();
+			if(rs.next()) {
+				Professor prof = new Professor();
+				prof.setIdUsr(rs.getInt("idUsr"));
+				prof.setNomeUsr(rs.getString("nomeUsr"));
+				prof.setNome(rs.getString("nome"));
 				return prof;
 			}
 			return null;

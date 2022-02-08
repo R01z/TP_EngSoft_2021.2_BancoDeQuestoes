@@ -15,6 +15,10 @@ public class AlunoServices {
 		return dao.findById(obj.getIdUsr());
 	}
 	
+	public Aluno pesquisaAlunoUsr(Aluno obj) {
+		return dao.findByUsr(obj.getNomeUsr());
+	}
+	
 	public Aluno pesquisaAlunoMatricula(Aluno obj) {
 		return dao.findByMatricula(obj.getMatricula());
 	}
