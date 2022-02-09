@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="500.0" style="-fx-background-color: #2720b4;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bancodequestoes.controllers.CadastroQuestaoController">
+   <children>
+      <ImageView fx:id="tema" fitHeight="500.0" fitWidth="500.0" layoutY="-10.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../imgs/login.jpg" />
+         </image>
+      </ImageView>
+      <Text fill="WHITE" layoutX="57.0" layoutY="196.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Enunciado:" />
+      <Text fill="WHITE" layoutX="57.0" layoutY="286.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Resposta" />
+      <Text fill="WHITE" layoutX="57.0" layoutY="378.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Temas:" wrappingWidth="72.24267578125" />
+      <TextArea fx:id="enunciado" layoutX="58.0" layoutY="199.0" prefHeight="62.0" prefWidth="401.0" />
+      <TextArea fx:id="resposta" layoutX="57.0" layoutY="289.0" prefHeight="62.0" prefWidth="401.0" />
+      <RadioButton fx:id="publica" layoutX="250.0" layoutY="384.0" mnemonicParsing="false" selected="true" text="Pública" textFill="WHITE">
+         <toggleGroup>
+            <ToggleGroup fx:id="acesso" />
+         </toggleGroup>
+      </RadioButton>
+      <RadioButton fx:id="privada" layoutX="354.0" layoutY="384.0" mnemonicParsing="false" text="Privada" textFill="WHITE" toggleGroup="$acesso" />
+      <Button fx:id="btCadastrar" layoutX="377.0" layoutY="418.0" mnemonicParsing="false" onMouseClicked="#cadastrar" text="Cadastrar" />
+      <ComboBox fx:id="temas" layoutX="58.0" layoutY="381.0" prefWidth="150.0" />
+      <Text fill="WHITE" layoutX="208.0" layoutY="401.0" onMouseClicked="#cadastrarTema" strokeType="OUTSIDE" strokeWidth="0.0" text="+">
+         <font>
+            <Font name="System Bold" size="25.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Text>
+      <Button layoutX="377.0" layoutY="449.0" mnemonicParsing="false" onMouseClicked="#voltar" prefHeight="24.0" prefWidth="82.0" text="Voltar" />
+   </children>
+</Pane>

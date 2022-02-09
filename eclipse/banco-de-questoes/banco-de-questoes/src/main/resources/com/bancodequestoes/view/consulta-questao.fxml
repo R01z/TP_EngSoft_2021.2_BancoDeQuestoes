@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Text?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="500.0" style="-fx-background-color: #2720b4;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bancodequestoes.controllers.ConsultaQuestaoController">
+   <children>
+      <ImageView fitHeight="500.0" fitWidth="500.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../imgs/login.jpg" />
+         </image>
+      </ImageView>
+      <GridPane fx:id="gridPane" layoutX="15.0" layoutY="185.0" prefHeight="231.0" prefWidth="465.0" >
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Text fx:id="enunciado" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" textOrigin="CENTER" />
+            <Text fx:id="resposta" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" textOrigin="CENTER" GridPane.rowIndex="1" />
+         </children>
+      </GridPane>
+      <CheckBox fx:id="chkBox" layoutX="315.0" layoutY="412.0" mnemonicParsing="false" onMouseClicked="#verResposta" text="Mostrar a resposta?" textFill="WHITE" visible="false" />
+      <Button fx:id="proxQuestao" disable="true" layoutX="338.0" layoutY="441.0" mnemonicParsing="false" onMouseClicked="#proxQuestao" text="Proxíma Questão" visible="false" />
+      <Button fx:id="antQuestao" disable="true" layoutX="27.0" layoutY="441.0" mnemonicParsing="false" onMouseClicked="#antQuestao" text="Questao Anterior" visible="false" />
+      <Button fx:id="voltar" layoutX="220.0" layoutY="441.0" mnemonicParsing="false" onMouseClicked="#voltar" text="Voltar" />
+      <Text fx:id="txtProcurar" fill="WHITE" layoutX="132.0" layoutY="255.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Procurar questoes com sobre tema " textAlignment="CENTER" />
+      <Button fx:id="btSim" layoutX="226.0" layoutY="265.0" mnemonicParsing="false" onMouseClicked="#run" text="Sim" />
+      <Text fx:id="txtLoading" fill="WHITE" layoutX="96.0" layoutY="293.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Procurando questões sobre o tema... Aguarde " textOrigin="CENTER" visible="false" />
+      <Text fx:id="lblResposta" fill="WHITE" layoutX="216.0" layoutY="306.0" strokeType="OUTSIDE" strokeWidth="0.0" text="RESPOSTA" visible="false" />
+      <Text fx:id="lblEnunciado" fill="WHITE" layoutX="208.0" layoutY="189.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ENUNCIADO" visible="false" />
+   </children>
+</Pane>

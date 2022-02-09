@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Text?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="500.0" style="-fx-background-color: #2720b4;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bancodequestoes.controllers.LoginController">
+   <children>
+      <ImageView fitHeight="500.0" fitWidth="500.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../imgs/login.jpg" />
+         </image>
+      </ImageView>
+      <TextField fx:id="login" layoutX="60.0" layoutY="215.0" prefHeight="10.0" prefWidth="200.0" />
+      <PasswordField fx:id="senha" layoutX="60.0" layoutY="278.0" prefHeight="10.0" prefWidth="200.0" />
+      <Text fill="WHITE" layoutX="60.0" layoutY="210.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nome de usuário:" />
+      <Text fill="WHITE" layoutX="62.0" layoutY="273.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Senha:" />
+      <Text fx:id="alertNomeUsuario" blendMode="ADD" fill="#dd0000" layoutX="143.0" layoutY="255.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nome de usuário inválido!" visible="false" />
+      <Text fx:id="alertSenha" blendMode="ADD" fill="#dd0000" layoutX="141.0" layoutY="318.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Senha inválida!" visible="false" />
+      <Button layoutX="361.0" layoutY="319.0" mnemonicParsing="false" onMouseClicked="#entrar" text="Entrar" />
+      <Hyperlink fx:id="linkCadastro" layoutX="60.0" layoutY="425.0" onMouseClicked="#cadastrar" text="Se você ainda não tem uma conta, cadastre-se →" textFill="WHITE" underline="true" />
+      <RadioButton layoutX="61.0" layoutY="322.0" mnemonicParsing="false" selected="true" text="Aluno" textFill="WHITE">
+         <toggleGroup>
+            <ToggleGroup fx:id="nivel" />
+         </toggleGroup>
+      </RadioButton>
+      <RadioButton layoutX="141.0" layoutY="321.0" mnemonicParsing="false" text="Professor" textFill="WHITE" toggleGroup="$nivel" />
+   </children>
+</Pane>
