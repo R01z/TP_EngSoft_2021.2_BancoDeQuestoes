@@ -12,14 +12,13 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-
-<AnchorPane prefHeight="217.0" prefWidth="502.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/16">
+<AnchorPane prefHeight="217.0" prefWidth="502.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.CadastroDeQuestoesController">
    <children>
       <GridPane layoutX="48.0" layoutY="50.0" prefHeight="204.0" prefWidth="461.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="20.0">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="149.0" minWidth="10.0" prefWidth="68.0" />
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="240.0" minWidth="10.0" prefWidth="240.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="283.0" minWidth="10.0" prefWidth="269.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="121.0" minWidth="10.0" prefWidth="97.0" />
         </columnConstraints>
         <rowConstraints>
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -43,19 +42,19 @@
                   <Font size="14.0" />
                </font>
             </Label>
-            <Label textFill="RED" GridPane.columnIndex="2" />
-            <Label textFill="RED" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-            <Label GridPane.columnIndex="2" GridPane.rowIndex="2" />
-            <TextField GridPane.columnIndex="1" />
-            <TextField GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <Label fx:id="labelErrorEnunciado" textFill="RED" GridPane.columnIndex="2" />
+            <Label fx:id="labelErrorResposta" textFill="RED" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+            <Label fx:id="labelErrorPublica" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+            <TextField fx:id="txtEnunciado" GridPane.columnIndex="1" />
+            <TextField fx:id="txtResposta" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                <children>
-                  <RadioButton mnemonicParsing="false" text="Sim">
+                  <RadioButton fx:id="rBtSim" mnemonicParsing="false" text="Sim">
                      <HBox.margin>
                         <Insets top="15.0" />
                      </HBox.margin>
                   </RadioButton>
-                  <RadioButton mnemonicParsing="false" text="Não">
+                  <RadioButton fx:id="rBtNao" mnemonicParsing="false" text="Não">
                      <HBox.margin>
                         <Insets left="15.0" top="15.0" />
                      </HBox.margin>
@@ -64,8 +63,8 @@
             </HBox>
             <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
                <children>
-                  <Button mnemonicParsing="false" text="Salvar" />
-                  <Button mnemonicParsing="false" text="Cancelar">
+                  <Button fx:id="btSalvar" mnemonicParsing="false" onAction="#onBtSalvarAction" text="Salvar" />
+                  <Button fx:id="btCancelar" mnemonicParsing="false" onAction="#onBtCancelarAction" text="Cancelar">
                      <HBox.margin>
                         <Insets left="20.0" />
                      </HBox.margin>
