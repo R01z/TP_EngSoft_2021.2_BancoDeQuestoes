@@ -1,0 +1,6 @@
+Não foi desenvolvido um instalador especifico para o sistema.
+O arquivo scriptBanco.sql deve ser executado em uma ferramenta de 
+desenvolvimento de banco de dados.
+Na pasta "tp_engSoft_20212\eclipse\banco-de-questoes\banco-de-questoes\src\main\resources"
+o arquivo "db.properties" deve ser editado com os dados de acesso ao MySql
+do computador usado.
